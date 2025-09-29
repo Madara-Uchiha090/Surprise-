@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bestie Surprise</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: radial-gradient(circle at center, #1e0b33, #0a0218);
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Sparkle Particles */
+        .sparkle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            animation: fall linear infinite;
+            opacity: 0.8;
+            z-index: 1;
+        }
+
+        @keyframes fall {
+            from {
+                transform: translateY(-10px) rotate(0deg);
+            }
+
+            to {
+                transform: translateY(100vh) rotate(360deg);
+            }
+        }
+
+        /* Heart Floating */
+        .heart {
+            position: absolute;
+            font-size: 24px;
+            animation: floatUp 8s linear forwards;
+            opacity: 0;
+            z-index: 10;
+            text-shadow: 0 0 10px rgba(255, 105, 180, 0.7);
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) scale(0.5);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-100vh) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        /* Popup */
+        #popup {
+            transform: translate(-50%, -50%) scale(0.5);
+            opacity: 0;
+            transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            visibility: hidden;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            z-index: 100;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        #popup.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        button {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(147, 51, 234, 0.5);
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(147, 51, 234, 0.7);
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        /* Typewriter Effect */
+        .typewriter {
+            overflow: visible;
+            white-space: normal;
+            display: block;
+            max-width: 100%;
+            line-height: 1.6;
+        }
+
+        /* Instagram Style Card */
+        .ig-card {
+            background: linear-gradient(135deg, #42275a, #734b6d);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 450px;
+            width: 90%;
+            margin: 0 auto;
+            max-height: 85vh;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+        }
+
+        /* Profile Image */
+        .profile-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 20px;
+            object-fit: cover;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 30px rgba(255, 105, 180, 0.6);
+            margin: 0 auto 20px;
+            display: block;
+        }
+
+        .ig-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .ig-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #ff00cc, #3333ff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: white;
+            box-shadow: 0 0 15px rgba(255, 0, 204, 0.5);
+        }
+
+        .ig-username {
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .ig-more {
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .ig-content {
+            color: white;
+            line-height: 1.8;
+            font-size: 15px;
+            text-align: center;
+        }
+
+        .ig-footer {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .ig-icon {
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .ig-icon:hover {
+            transform: scale(1.2);
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(10, 2, 24, 0.5);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #8b5cf6;
+            border-radius: 4px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 640px) {
+            .ig-content {
+                font-size: 14px;
+            }
+
+            .ig-card {
+                width: 95%;
+                padding: 15px;
+                max-width: 95%;
+            }
+
+            .ig-avatar {
+                width: 50px;
+                height: 50px;
+                font-size: 24px;
+            }
+
+            .heart {
+                font-size: 18px;
+            }
+
+            .profile-img {
+                width: 130px;
+                height: 130px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sparkles -->
+    <script>
+        for (let i = 0; i < 80; i++) {
+            let star = document.createElement("div");
+            star.classList.add("sparkle");
+            star.style.left = Math.random() * 100 + "%";
+            star.style.top = Math.random() * 100 + "%";
+            star.style.animationDuration = (3 + Math.random() * 5) + "s";
+            star.style.opacity = Math.random() * 0.7 + 0.3;
+            star.style.width = (2 + Math.random() * 3) + "px";
+            star.style.height = star.style.width;
+            document.body.appendChild(star);
+        }
+    </script>
+
+    <div class="h-screen flex flex-col items-center justify-center relative z-20 px-4">
+        <!-- Title -->
+        <h1
+            class="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 mb-8 text-center">
+            Bestie Surprise For You! 💖
+        </h1>
+
+        <!-- Button -->
+        <button id="surpriseBtn"
+            class="px-8 py-4 bg-gradient-to-r from-purple-600 to-indigo-700 hover:from-purple-700 hover:to-indigo-800 text-white rounded-full text-xl font-bold shadow-xl transition-all duration-300 transform hover:scale-105">
+            <i class="fas fa-gift mr-2"></i> Click for Surprise!
+        </button>
+
+        <!-- Instagram Style Popup -->
+        <div id="popup">
+            <div class="ig-card">
+                <!-- Profile Image -->
+                <img src="https://sdmntprpolandcentral.oaiusercontent.com/files/00000000-75e8-620a-a477-00e4b08f8168/raw?se=2025-09-29T22%3A21%3A52Z&sp=r&sv=2024-08-04&sr=b&scid=8ee574d7-deb6-57ef-bd0c-1f3a2fbed6bd&skoid=d5627e4c-566b-4761-a954-54993b0ed17b&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-09-29T18%3A29%3A52Z&ske=2025-09-30T18%3A29%3A52Z&sks=b&skv=2024-08-04&sig=ETethc4Qv4%2B5QQwk/c3g8sxad6B//IHvVuVaptxZo04%3D"
+                    alt="Profile" class="profile-img">
+
+                <div class="ig-header">
+                    <div class="ig-avatar">
+                        👑
+                    </div>
+                    <div class="ig-username">Dear Bestie....</div>
+                    <div class="ig-more">
+                        <i class="fas fa-ellipsis-v"></i>
+                    </div>
+                </div>
+
+                <div class="ig-content">
+                    <p id="messageText" class="typewriter">
+                        You are 💎…<br><br>
+
+
+                        Tu meri life ki woh insaan hai jisse baat karke din acha lagta hai, aur jiske bina din
+                        adhura lagta hai… Bestie bolta hu but honestly, tu meri life ka ek priceless gift hai ❤️. Teri
+                        smile mere liye ek healing hai jo meri sari problems aur tension khatam kar deti hain, aur main
+                        bas itna chahta hu ki tu hamesha khush rahe ✨<br><br>
+
+                        Hamesha aise hi chamakti rehna, <span class="text-yellow-300">Cutie madam ji</span>! 👑✨<br>
+                        Tumhare bina toh yeh universe incomplete hai! 🌌<br><br>
+
+                        Keep shining, keep slaying! 💖<br>
+
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const btn = document.getElementById("surpriseBtn");
+        const popup = document.getElementById("popup");
+
+        btn.addEventListener("click", () => {
+            // Hide button after click
+            btn.style.opacity = "0";
+            btn.style.pointerEvents = "none";
+
+            // Show popup
+            popup.classList.add("show");
+
+            // Create floating hearts
+            for (let i = 0; i < 30; i++) {
+                createHeart();
+            }
+
+            // Continue creating hearts periodically
+            const heartInterval = setInterval(() => {
+                createHeart();
+            }, 300);
+
+            // Stop after 15 seconds
+            setTimeout(() => {
+                clearInterval(heartInterval);
+            }, 15000);
+        });
+
+        function createHeart() {
+            const heart = document.createElement("div");
+            heart.classList.add("heart");
+            heart.innerHTML = "❤️";
+            heart.style.left = Math.random() * 100 + "%";
+            heart.style.bottom = "-50px";
+            heart.style.animationDuration = (6 + Math.random() * 8) + "s";
+            heart.style.fontSize = (16 + Math.random() * 12) + "px";
+            document.body.appendChild(heart);
+
+            // Remove heart after animation completes
+            setTimeout(() => {
+                if (heart.parentNode) {
+                    heart.parentNode.removeChild(heart);
+                }
+            }, 8000);
+        }
+    </script>
+</body>
+
+</html>
